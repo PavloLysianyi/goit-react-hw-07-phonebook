@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addContact, fetchContacts } from './contactsSlice';
-import { addNewContact } from './api'; // Add this import
+import { addNewContact } from './api';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const ContactForm = () => {
 
       dispatch(addContact.fulfilled(newContact));
       setFormData({ name: '', number: '' });
-      dispatch(fetchContacts()); // Оновити список контактів після додавання нового контакту
+      dispatch(fetchContacts());
     } catch (error) {
       console.error('Error adding contact:', error.message);
       dispatch(addContact.rejected('Failed to add contact'));
