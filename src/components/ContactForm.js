@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  addContact,
-  setContactsLoading,
-  setContactsError,
-} from './contactsSlice';
-import { addNewContact } from './api';
+import { addContact, fetchContacts } from './contactsSlice';
+import { addNewContact } from './api'; // Add this import
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -17,13 +13,13 @@ const ContactForm = () => {
   };
 
   const handleAddContact = async () => {
-    dispatch(setContactsLoading(true));
+    dispatch(addContact.pending());
 
     const { name, number } = formData;
 
     if (name.trim() === '' || number.trim() === '') {
       alert("Будь ласка, введіть ім'я та номер контакту.");
-      dispatch(setContactsLoading(false));
+      dispatch(addContact.rejected('Failed to add contact'));
       return;
     }
 
@@ -33,13 +29,12 @@ const ContactForm = () => {
         number,
       });
 
-      dispatch(addContact(newContact));
+      dispatch(addContact.fulfilled(newContact));
       setFormData({ name: '', number: '' });
+      dispatch(fetchContacts()); // Оновити список контактів після додавання нового контакту
     } catch (error) {
       console.error('Error adding contact:', error.message);
-      dispatch(setContactsError('Failed to add contact'));
-    } finally {
-      dispatch(setContactsLoading(false));
+      dispatch(addContact.rejected('Failed to add contact'));
     }
   };
 
