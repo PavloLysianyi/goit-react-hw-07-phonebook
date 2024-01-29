@@ -1,23 +1,24 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact, selectContacts, selectFilter } from './contactsSlice';
+import { deleteContact } from './contactsSlice';
+import { deleteContact as deleteContactFromApi } from './api';
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
-  const filter = useSelector(selectFilter);
+  const contacts = useSelector(state => state.contacts.items);
 
-  const handleDeleteContact = id => {
-    dispatch(deleteContact(id));
+  const handleDeleteContact = async id => {
+    try {
+      await deleteContactFromApi(id);
+      dispatch(deleteContact(id));
+    } catch (error) {
+      console.error('Error deleting contact:', error.message);
+    }
   };
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
 
   return (
     <ul className="list">
-      {filteredContacts.map(contact => (
+      {contacts.map(contact => (
         <li key={contact.id} className="list-item">
           <span className="contact-info">
             {contact.name} - {contact.number}

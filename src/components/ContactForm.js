@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact, selectContacts } from './contactsSlice';
-import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from './contactsSlice';
+import { addNewContact } from './api';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
   const [formData, setFormData] = useState({ name: '', number: '' });
 
   const handleInputChange = event => {
@@ -13,7 +12,7 @@ const ContactForm = () => {
     setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  const handleAddContact = () => {
+  const handleAddContact = async () => {
     const { name, number } = formData;
 
     if (name.trim() === '' || number.trim() === '') {
@@ -21,26 +20,17 @@ const ContactForm = () => {
       return;
     }
 
-    // Перевірка наявності контакту із введеним ім'ям або номером
-    const contactExists = contacts.some(
-      contact =>
-        contact.name.toLowerCase() === name.toLowerCase() ||
-        contact.number === number
-    );
+    try {
+      const newContact = await addNewContact({
+        name,
+        number,
+      });
 
-    if (contactExists) {
-      alert("Контакт з таким ім'ям або номером вже існує.");
-      return;
+      dispatch(addContact(newContact));
+      setFormData({ name: '', number: '' });
+    } catch (error) {
+      console.error('Error adding contact:', error.message);
     }
-
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-
-    dispatch(addContact(newContact));
-    setFormData({ name: '', number: '' });
   };
 
   return (
