@@ -17,7 +17,6 @@ const ContactForm = () => {
 
     if (name.trim() === '' || number.trim() === '') {
       alert("Будь ласка, введіть ім'я та номер контакту.");
-      dispatch(addContact.rejected('Failed to add contact'));
       return;
     }
 
@@ -27,7 +26,7 @@ const ContactForm = () => {
         number,
       });
 
-      dispatch(addContact.fulfilled(newContact));
+      dispatch(addContact(newContact));
       setFormData({ name: '', number: '' });
     } catch (error) {
       console.error('Error adding contact:', error.message);

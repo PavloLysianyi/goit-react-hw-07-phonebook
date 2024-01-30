@@ -41,6 +41,7 @@ export const deleteContact = async contactId => {
     if (!response.ok) {
       throw new Error('Failed to delete contact');
     }
+    return contactId;
   } catch (error) {
     throw new Error('Failed to delete contact');
   }

@@ -1,14 +1,19 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContact } from './operations';
-import { deleteContact as deleteContactFromApi } from '../api';
+import {
+  selectContacts,
+  selectFilter,
+  selectLoading,
+  selectError,
+} from './selectors';
 
 const ContactList = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.items);
-  const filter = useSelector(state => state.contacts.filter);
-  const loading = useSelector(state => state.contacts.isLoading);
-  const error = useSelector(state => state.contacts.error);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilter);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
 
   const filteredContacts = contacts.filter(
     contact =>
@@ -20,8 +25,8 @@ const ContactList = () => {
 
   const handleDeleteContact = async id => {
     try {
-      await deleteContactFromApi(id);
-      dispatch(deleteContact.fulfilled(id));
+      await deleteContact(id);
+      dispatch(deleteContact(id));
     } catch (error) {
       console.error('Error deleting contact:', error.message);
     }
