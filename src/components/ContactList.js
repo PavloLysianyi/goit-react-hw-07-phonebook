@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from './contactsSlice';
+import { deleteContact } from './operations';
 import { deleteContact as deleteContactFromApi } from '../api';
 
 const ContactList = () => {
@@ -12,19 +12,18 @@ const ContactList = () => {
 
   const filteredContacts = contacts.filter(
     contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase()) ||
-      contact.number.toLowerCase().includes(filter.toLowerCase())
+      (contact.name &&
+        contact.name.toLowerCase().includes(filter.toLowerCase())) ||
+      (contact.number &&
+        contact.number.toLowerCase().includes(filter.toLowerCase()))
   );
 
   const handleDeleteContact = async id => {
-    dispatch(deleteContact.pending());
-
     try {
       await deleteContactFromApi(id);
       dispatch(deleteContact.fulfilled(id));
     } catch (error) {
       console.error('Error deleting contact:', error.message);
-      dispatch(deleteContact.rejected('Failed to delete contact'));
     }
   };
 
