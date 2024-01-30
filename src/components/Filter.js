@@ -12,7 +12,7 @@ const Filter = () => {
 
   return (
     <div>
-      Пошук контактів за ім'ям
+      Пошук контактів за ім'ям або номером телефону
       <input
         type="text"
         value={filter}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addContact, fetchContacts } from './contactsSlice';
-import { addNewContact } from './api';
+import { addContact } from './contactsSlice';
+import { addNewContact } from '../api';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -13,8 +13,6 @@ const ContactForm = () => {
   };
 
   const handleAddContact = async () => {
-    dispatch(addContact.pending());
-
     const { name, number } = formData;
 
     if (name.trim() === '' || number.trim() === '') {
@@ -31,10 +29,8 @@ const ContactForm = () => {
 
       dispatch(addContact.fulfilled(newContact));
       setFormData({ name: '', number: '' });
-      dispatch(fetchContacts());
     } catch (error) {
       console.error('Error adding contact:', error.message);
-      dispatch(addContact.rejected('Failed to add contact'));
     }
   };
 

@@ -1,13 +1,20 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteContact } from './contactsSlice';
-import { deleteContact as deleteContactFromApi } from './api';
+import { deleteContact as deleteContactFromApi } from '../api';
 
 const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.contacts.filter);
   const loading = useSelector(state => state.contacts.isLoading);
   const error = useSelector(state => state.contacts.error);
+
+  const filteredContacts = contacts.filter(
+    contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase()) ||
+      contact.number.toLowerCase().includes(filter.toLowerCase())
+  );
 
   const handleDeleteContact = async id => {
     dispatch(deleteContact.pending());
@@ -26,7 +33,7 @@ const ContactList = () => {
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <ul className="list">
-        {contacts.map(contact => (
+        {filteredContacts.map(contact => (
           <li key={contact.id} className="list-item">
             <span className="contact-info">
               {contact.name} - {contact.number}
