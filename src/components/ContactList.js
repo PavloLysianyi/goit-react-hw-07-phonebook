@@ -25,7 +25,6 @@ const ContactList = () => {
 
   const handleDeleteContact = async id => {
     try {
-      await deleteContact(id);
       dispatch(deleteContact(id));
     } catch (error) {
       console.error('Error deleting contact:', error.message);
